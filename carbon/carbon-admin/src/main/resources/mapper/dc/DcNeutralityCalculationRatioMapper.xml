@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhonghui.dc.mapper.DcNeutralityCalculationRatioMapper">
+    
+    <resultMap type="DcNeutralityCalculationRatio" id="DcNeutralityCalculationRatioResult">
+        <result property="id"    column="id"    />
+        <result property="coalCo2"    column="coal_co2"    />
+        <result property="electricCo2"    column="electric_co2"    />
+        <result property="waterCo2"    column="water_co2"    />
+        <result property="oilCoal"    column="oil_coal"    />
+        <result property="co2Ratio"    column="co2_ratio"    />
+    </resultMap>
+
+    <sql id="selectDcNeutralityCalculationRatioVo">
+        select id, coal_co2, electric_co2, water_co2, oil_coal, co2_ratio from dc_neutrality_calculation_ratio
+    </sql>
+
+    <select id="selectDcNeutralityCalculationRatioList" parameterType="DcNeutralityCalculationRatio" resultMap="DcNeutralityCalculationRatioResult">
+        <include refid="selectDcNeutralityCalculationRatioVo"/>
+        <where>  
+            <if test="coalCo2 != null "> and coal_co2 = #{coalCo2}</if>
+            <if test="electricCo2 != null "> and electric_co2 = #{electricCo2}</if>
+            <if test="waterCo2 != null "> and water_co2 = #{waterCo2}</if>
+            <if test="oilCoal != null "> and oil_coal = #{oilCoal}</if>
+            <if test="co2Ratio != null "> and co2_ratio = #{co2Ratio}</if>
+        </where>
+    </select>
+    
+    <select id="selectDcNeutralityCalculationRatioById" parameterType="Long" resultMap="DcNeutralityCalculationRatioResult">
+        <include refid="selectDcNeutralityCalculationRatioVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertDcNeutralityCalculationRatio" parameterType="DcNeutralityCalculationRatio" useGeneratedKeys="true" keyProperty="id">
+        insert into dc_neutrality_calculation_ratio
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="coalCo2 != null">coal_co2,</if>
+            <if test="electricCo2 != null">electric_co2,</if>
+            <if test="waterCo2 != null">water_co2,</if>
+            <if test="oilCoal != null">oil_coal,</if>
+            <if test="co2Ratio != null">co2_ratio,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="coalCo2 != null">#{coalCo2},</if>
+            <if test="electricCo2 != null">#{electricCo2},</if>
+            <if test="waterCo2 != null">#{waterCo2},</if>
+            <if test="oilCoal != null">#{oilCoal},</if>
+            <if test="co2Ratio != null">#{co2Ratio},</if>
+         </trim>
+    </insert>
+
+    <update id="updateDcNeutralityCalculationRatio" parameterType="DcNeutralityCalculationRatio">
+        update dc_neutrality_calculation_ratio
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="coalCo2 != null">coal_co2 = #{coalCo2},</if>
+            <if test="electricCo2 != null">electric_co2 = #{electricCo2},</if>
+            <if test="waterCo2 != null">water_co2 = #{waterCo2},</if>
+            <if test="oilCoal != null">oil_coal = #{oilCoal},</if>
+            <if test="co2Ratio != null">co2_ratio = #{co2Ratio},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteDcNeutralityCalculationRatioById" parameterType="Long">
+        delete from dc_neutrality_calculation_ratio where id = #{id}
+    </delete>
+
+    <delete id="deleteDcNeutralityCalculationRatioByIds" parameterType="String">
+        delete from dc_neutrality_calculation_ratio where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

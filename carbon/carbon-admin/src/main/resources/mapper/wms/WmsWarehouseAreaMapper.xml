@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhonghui.wms.mapper.WmsWarehouseAreaMapper">
+
+    <resultMap type="WmsWarehouseArea" id="WmsWarehouseAreaResult">
+        <result property="id"    column="id"    />
+        <result property="warehouseId"    column="warehouse_id"    />
+        <result property="areaCode"    column="area_code"    />
+        <result property="areaName"    column="area_name"    />
+        <result property="warehouseName"    column="warehouse_name"    />
+    </resultMap>
+
+    <resultMap id="WmsWarehouseAreaWmsWarehouseSeatResult" type="WmsWarehouseArea" extends="WmsWarehouseAreaResult">
+        <collection property="wmsWarehouseSeatList" notNullColumn="sub_id" javaType="java.util.List" resultMap="WmsWarehouseSeatResult" />
+    </resultMap>
+
+    <resultMap type="WmsWarehouseSeat" id="WmsWarehouseSeatResult">
+        <result property="id"    column="sub_id"    />
+        <result property="warehouseAreaId"    column="sub_warehouse_area_id"    />
+        <result property="seatCode"    column="sub_seat_code"    />
+        <result property="seatName"    column="sub_seat_name"    />
+    </resultMap>
+
+    <sql id="selectWmsWarehouseAreaVo">
+        select a.id, a.area_code, a.area_name, b.id as warehouse_id, b.warehouse_name
+        from wms_warehouse_area a left join wms_warehouse b on a.warehouse_id = b.id
+    </sql>
+
+    <select id="selectWmsWarehouseAreaList" parameterType="WmsWarehouseArea" resultMap="WmsWarehouseAreaResult">
+        <include refid="selectWmsWarehouseAreaVo"/>
+        <where>
+            <if test="warehouseId != null "> and warehouse_id = #{warehouseId}</if>
+            <if test="areaCode != null  and areaCode != ''"> and area_code = #{areaCode}</if>
+            <if test="areaName != null  and areaName != ''"> and area_name like concat('%', #{areaName}, '%')</if>
+        </where>
+    </select>
+
+    <select id="selectWmsWarehouseAreaById" parameterType="Long" resultMap="WmsWarehouseAreaWmsWarehouseSeatResult">
+        select a.id, a.warehouse_id, a.area_code, a.area_name,
+ b.id as sub_id, b.warehouse_area_id as sub_warehouse_area_id, b.seat_code as sub_seat_code, b.seat_name as sub_seat_name
+        from wms_warehouse_area a
+        left join wms_warehouse_seat b on b.warehouse_area_id = a.id
+        where a.id = #{id}
+    </select>
+
+    <insert id="insertWmsWarehouseArea" parameterType="WmsWarehouseArea" useGeneratedKeys="true" keyProperty="id">
+        insert into wms_warehouse_area
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="warehouseId != null">warehouse_id,</if>
+            <if test="areaCode != null">area_code,</if>
+            <if test="areaName != null">area_name,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="warehouseId != null">#{warehouseId},</if>
+            <if test="areaCode != null">#{areaCode},</if>
+            <if test="areaName != null">#{areaName},</if>
+         </trim>
+    </insert>
+
+    <update id="updateWmsWarehouseArea" parameterType="WmsWarehouseArea">
+        update wms_warehouse_area
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="warehouseId != null">warehouse_id = #{warehouseId},</if>
+            <if test="areaCode != null">area_code = #{areaCode},</if>
+            <if test="areaName != null">area_name = #{areaName},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteWmsWarehouseAreaById" parameterType="Long">
+        delete from wms_warehouse_area where id = #{id}
+    </delete>
+
+    <delete id="deleteWmsWarehouseAreaByIds" parameterType="String">
+        delete from wms_warehouse_area where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <delete id="deleteWmsWarehouseSeatByWarehouseAreaIds" parameterType="String">
+        delete from wms_warehouse_seat where warehouse_area_id in
+        <foreach item="warehouseAreaId" collection="array" open="(" separator="," close=")">
+            #{warehouseAreaId}
+        </foreach>
+    </delete>
+
+    <delete id="deleteWmsWarehouseSeatByWarehouseAreaId" parameterType="Long">
+        delete from wms_warehouse_seat where warehouse_area_id = #{warehouseAreaId}
+    </delete>
+
+    <insert id="batchWmsWarehouseSeat">
+        insert into wms_warehouse_seat( warehouse_area_id, seat_code, seat_name) values
+		<foreach item="item" index="index" collection="list" separator=",">
+            ( #{item.warehouseAreaId}, #{item.seatCode}, #{item.seatName})
+        </foreach>
+    </insert>
+</mapper>

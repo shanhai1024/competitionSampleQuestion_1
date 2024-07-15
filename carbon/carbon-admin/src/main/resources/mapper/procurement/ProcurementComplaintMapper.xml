@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhonghui.procurement.mapper.ProcurementComplaintMapper">
+
+    <resultMap type="com.zhonghui.procurement.domain.ProcurementComplaint" id="procurementComplaintResultMap">
+        <result property="complaintId" column="complaint_id"/>
+        <result property="title" column="title"/>
+        <result property="creationTime" column="creation_time"/>
+        <result property="complaintType" column="complaint_type"/>
+        <result property="contactNumber" column="contact_number"/>
+        <result property="contactPerson" column="contact_person"/>
+        <result property="attachment" column="attachment"/>
+        <result property="complaintText" column="complaint_text"/>
+        <result property="processingResult" column="processing_result"/>
+    </resultMap>
+
+    <select id="getComplaintList" resultMap="procurementComplaintResultMap">
+        select * from procurement_complaint
+        <where>
+            <if test="type==1">
+                and complaint_type=0
+            </if>
+            <if test="type==2">
+                and complaint_type=1
+            </if>
+        </where>
+    </select>
+
+    <insert id="setComplaint" parameterType="com.zhonghui.procurement.domain.ProcurementComplaint">
+        insert
+        procurement_complaint (title,complaint_text,contact_person,contact_number,creation_time) values (
+        #{title},
+        #{complaintText},
+        #{contactPerson},
+        #{contactNumber},
+        #{creationTime}
+        )
+    </insert>
+
+    <select id="getComplaintListItem" resultMap="procurementComplaintResultMap">
+        select *
+        from procurement_complaint
+        where complaint_id = #{id};
+    </select>
+</mapper>

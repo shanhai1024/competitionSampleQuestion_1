@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhonghui.procurementManagement.mapper.PmMarkMapper">
+    
+    <resultMap type="PmMark" id="PmMarkResult">
+        <result property="markId"    column="mark_id"    />
+        <result property="endTime"    column="end_time"    />
+        <result property="announcementId"    column="announcement_id"    />
+        <result property="bidType"    column="bid_type"    />
+        <result property="title"    column="title"    />
+    </resultMap>
+
+    <sql id="selectPmMarkVo">
+        select mark_id, end_time, announcement_id, bid_type, title from procurement_mark
+    </sql>
+
+    <select id="selectPmMarkList" parameterType="PmMark" resultMap="PmMarkResult">
+        <include refid="selectPmMarkVo"/>
+        <where>  
+            <if test="title != null  and title != ''"> and title = #{title}</if>
+        </where>
+    </select>
+    
+    <select id="selectPmMarkByMarkId" parameterType="Long" resultMap="PmMarkResult">
+        <include refid="selectPmMarkVo"/>
+        where mark_id = #{markId}
+    </select>
+        
+    <insert id="insertPmMark" parameterType="PmMark" useGeneratedKeys="true" keyProperty="markId">
+        insert into procurement_mark
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="endTime != null">end_time,</if>
+            <if test="announcementId != null">announcement_id,</if>
+            <if test="bidType != null">bid_type,</if>
+            <if test="title != null and title != ''">title,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="endTime != null">#{endTime},</if>
+            <if test="announcementId != null">#{announcementId},</if>
+            <if test="bidType != null">#{bidType},</if>
+            <if test="title != null and title != ''">#{title},</if>
+         </trim>
+    </insert>
+
+    <update id="updatePmMark" parameterType="PmMark">
+        update procurement_mark
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="endTime != null">end_time = #{endTime},</if>
+            <if test="announcementId != null">announcement_id = #{announcementId},</if>
+            <if test="bidType != null">bid_type = #{bidType},</if>
+            <if test="title != null and title != ''">title = #{title},</if>
+        </trim>
+        where mark_id = #{markId}
+    </update>
+
+    <delete id="deletePmMarkByMarkId" parameterType="Long">
+        delete from procurement_mark where mark_id = #{markId}
+    </delete>
+
+    <delete id="deletePmMarkByMarkIds" parameterType="String">
+        delete from procurement_mark where mark_id in 
+        <foreach item="markId" collection="array" open="(" separator="," close=")">
+            #{markId}
+        </foreach>
+    </delete>
+</mapper>

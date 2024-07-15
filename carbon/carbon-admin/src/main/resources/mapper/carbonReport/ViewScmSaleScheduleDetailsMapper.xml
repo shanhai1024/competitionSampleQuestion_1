@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhonghui.carbonReport.mapper.ViewScmSaleScheduleDetailsMapper">
+    
+    <resultMap type="ViewScmSaleScheduleDetails" id="ViewScmSaleScheduleDetailsResult">
+        <result property="materialId"    column="material_id"    />
+        <result property="sales"    column="sales"    />
+        <result property="saleAmount"    column="sale_amount"    />
+        <result property="scheduleNumber"    column="schedule_number"    />
+        <result property="scheduleTitle"    column="schedule_title"    />
+        <result property="scheduleType"    column="schedule_type"    />
+        <result property="startDate"    column="start_date"    />
+        <result property="endDate"    column="end_date"    />
+        <result property="materialName"    column="material_name"    />
+    </resultMap>
+
+    <sql id="selectViewScmSaleScheduleDetailsVo">
+        select material_id, sales, schedule_number, schedule_title, schedule_type, start_date, end_date, material_name from view_scm_sale_schedule_details
+    </sql>
+
+    <select id="selectViewScmSaleScheduleDetailsList" parameterType="ViewScmSaleScheduleDetails" resultMap="ViewScmSaleScheduleDetailsResult">
+        <include refid="selectViewScmSaleScheduleDetailsVo"/>
+        <where>  
+            <if test="materialId != null "> and material_id = #{materialId}</if>
+            <if test="scheduleNumber != null  and scheduleNumber != ''"> and schedule_number like concat('%', #{scheduleNumber}, '%')</if>
+            <if test="scheduleTitle != null  and scheduleTitle != ''"> and schedule_title like concat('%', #{scheduleTitle}, '%')</if>
+            <if test="scheduleType != null "> and schedule_type = #{scheduleType}</if>
+            <if test="materialName != null  and materialName != ''"> and material_name like concat('%', #{materialName}, '%')</if>
+        </where>
+    </select>
+
+    <select id="selectAchieveRateByMonth" parameterType="map" resultType="map">
+        SELECT(
+                  SELECT
+                      IFNULL( sum( sales ), 0 ) total
+                  FROM
+                      view_scm_sale_schedule_details vsd
+                  WHERE
+                      schedule_type = 2
+                    AND DATE_FORMAT( vsd.start_date, '%Y-%m' ) =  #{month}) planTotal,
+
+              (SELECT
+                   IFNULL(sum( contract_amount ),0) total
+               FROM
+                   view_scm_sale_contract vsc
+               WHERE
+                   vsc.contract_year_month =  #{month}) contractTotal
+    </select>
+</mapper>

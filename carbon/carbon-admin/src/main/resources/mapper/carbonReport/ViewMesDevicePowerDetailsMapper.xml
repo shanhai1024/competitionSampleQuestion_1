@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhonghui.carbonReport.mapper.ViewMesDevicePowerDetailsMapper">
+    
+    <resultMap type="ViewMesDevicePowerDetails" id="ViewMesDevicePowerDetailsResult">
+        <result property="deviceId"    column="device_id"    />
+        <result property="deviceName"    column="device_name"    />
+        <result property="factoryId"    column="factory_id"    />
+        <result property="productionPlanId"    column="production_plan_id"    />
+        <result property="materialId"    column="material_id"    />
+        <result property="bomId"    column="bom_id"    />
+        <result property="technologyId"    column="technology_id"    />
+        <result property="producedQuantity"    column="produced_quantity"    />
+        <result property="quantityProduced"    column="quantity_produced"    />
+        <result property="manufactureDate"    column="manufacture_date"    />
+        <result property="technologyName"    column="technology_name"    />
+        <result property="unitPowerConsumption"    column="unit_power_consumption"    />
+        <result property="totalPowerConsume"    column="total_power_consume"    />
+        <result property="productionLine"    column="production_line"    />
+        <result property="saleOrderId"    column="sale_order_id"    />
+    </resultMap>
+
+    <sql id="selectViewMesDevicePowerDetailsVo">
+        select
+            device_id,
+            device_name,
+            factory_id,
+            production_plan_id,
+            material_id,
+            bom_id,
+            technology_id,
+            SUM(produced_quantity) produced_quantity,
+            SUM(quantity_produced) quantity_produced,
+            manufacture_date,
+            technology_name,
+            unit_power_consumption,
+            SUM(total_power_consume) total_power_consume,
+            production_line,
+            sale_order_id
+        from
+            view_mes_device_power_details
+    </sql>
+
+    <select id="selectViewMesDevicePowerDetailsList" parameterType="ViewMesDevicePowerDetails" resultMap="ViewMesDevicePowerDetailsResult">
+        SELECT
+        t.*
+        FROM
+        (
+        <include refid="selectViewMesDevicePowerDetailsVo"/>
+        <where>  
+            <if test="deviceName != null  and deviceName != ''"> and device_name like concat('%', #{deviceName}, '%')</if>
+            <if test="factoryId != null "> and factory_id = #{factoryId}</if>
+            <if test="productionPlanId != null "> and production_plan_id = #{productionPlanId}</if>
+            <if test="materialId != null "> and material_id = #{materialId}</if>
+            <if test="bomId != null "> and bom_id = #{bomId}</if>
+            <if test="technologyId != null "> and technology_id = #{technologyId}</if>
+            <if test="producedQuantity != null "> and produced_quantity = #{producedQuantity}</if>
+            <if test="quantityProduced != null "> and quantity_produced = #{quantityProduced}</if>
+            <if test="params.beginManufactureDate != null and params.beginManufactureDate != '' and params.endManufactureDate != null and params.endManufactureDate != ''"> and manufacture_date between #{params.beginManufactureDate} and #{params.endManufactureDate}</if>
+            <if test="technologyName != null  and technologyName != ''"> and technology_name like concat('%', #{technologyName}, '%')</if>
+            <if test="unitPowerConsumption != null "> and unit_power_consumption = #{unitPowerConsumption}</if>
+            <if test="totalPowerConsume != null "> and total_power_consume = #{totalPowerConsume}</if>
+            <if test="productionLine != null  and productionLine != ''"> and production_line = #{productionLine}</if>
+            <if test="saleOrderId != null "> and sale_order_id = #{saleOrderId}</if>
+        </where>
+        GROUP BY device_id) t
+        ORDER BY t.total_power_consume desc
+    </select>
+
+    <select id="selectDevicePowerReportByDay" parameterType="ViewMesDevicePowerDetails" resultMap="ViewMesDevicePowerDetailsResult">
+        <include refid="selectViewMesDevicePowerDetailsVo"/>
+        <where>
+            manufacture_date IS NOT NULL
+            <if test="deviceName != null  and deviceName != ''"> and device_name like concat('%', #{deviceName}, '%')</if>
+            <if test="factoryId != null "> and factory_id = #{factoryId}</if>
+            <if test="productionPlanId != null "> and production_plan_id = #{productionPlanId}</if>
+            <if test="materialId != null "> and material_id = #{materialId}</if>
+            <if test="bomId != null "> and bom_id = #{bomId}</if>
+            <if test="technologyId != null "> and technology_id = #{technologyId}</if>
+            <if test="producedQuantity != null "> and produced_quantity = #{producedQuantity}</if>
+            <if test="quantityProduced != null "> and quantity_produced = #{quantityProduced}</if>
+            <if test="params.beginManufactureDate != null and params.beginManufactureDate != '' and params.endManufactureDate != null and params.endManufactureDate != ''"> and manufacture_date between #{params.beginManufactureDate} and #{params.endManufactureDate}</if>
+            <if test="technologyName != null  and technologyName != ''"> and technology_name like concat('%', #{technologyName}, '%')</if>
+            <if test="unitPowerConsumption != null "> and unit_power_consumption = #{unitPowerConsumption}</if>
+            <if test="totalPowerConsume != null "> and total_power_consume = #{totalPowerConsume}</if>
+            <if test="productionLine != null  and productionLine != ''"> and production_line = #{productionLine}</if>
+            <if test="saleOrderId != null "> and sale_order_id = #{saleOrderId}</if>
+        </where>
+        GROUP BY device_id,manufacture_date
+    </select>
+    
+    <select id="selectViewMesDevicePowerDetailsByDeviceId" parameterType="Long" resultMap="ViewMesDevicePowerDetailsResult">
+        <include refid="selectViewMesDevicePowerDetailsVo"/>
+        where device_id = #{deviceId}
+    </select>
+</mapper>

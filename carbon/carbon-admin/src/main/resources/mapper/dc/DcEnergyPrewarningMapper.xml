@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhonghui.dc.mapper.DcEnergyPrewarningMapper">
+    
+    <resultMap type="DcEnergyPrewarning" id="DcEnergyPrewarningResult">
+        <result property="id"    column="id"    />
+        <result property="pointsName"    column="points_name"    />
+        <result property="pointsAddress"    column="points_address"    />
+        <result property="realTimePower"    column="real_time_power"    />
+        <result property="realTimeVolt"    column="real_time_volt"    />
+        <result property="status"    column="status"    />
+        <result property="reportTime"    column="report_time"    />
+        <result property="mark"    column="mark"    />
+    </resultMap>
+
+    <sql id="selectDcEnergyPrewarningVo">
+        select id, points_name, points_address, real_time_power, real_time_volt, status, report_time, mark from dc_energy_prewarning
+    </sql>
+
+    <select id="selectDcEnergyPrewarningList" parameterType="DcEnergyPrewarning" resultMap="DcEnergyPrewarningResult">
+        <include refid="selectDcEnergyPrewarningVo"/>
+        <where>  
+            <if test="pointsName != null  and pointsName != ''"> and points_name like concat('%', #{pointsName}, '%')</if>
+            <if test="pointsAddress != null  and pointsAddress != ''"> and points_address like concat('%', #{pointsAddress}, '%')</if>
+            <if test="status != null "> and status = #{status}</if>
+        </where>
+    </select>
+    
+    <select id="selectDcEnergyPrewarningById" parameterType="Long" resultMap="DcEnergyPrewarningResult">
+        <include refid="selectDcEnergyPrewarningVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertDcEnergyPrewarning" parameterType="DcEnergyPrewarning" useGeneratedKeys="true" keyProperty="id">
+        insert into dc_energy_prewarning
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="pointsName != null and pointsName != ''">points_name,</if>
+            <if test="pointsAddress != null and pointsAddress != ''">points_address,</if>
+            <if test="realTimePower != null">real_time_power,</if>
+            <if test="realTimeVolt != null">real_time_volt,</if>
+            <if test="status != null">status,</if>
+            <if test="reportTime != null">report_time,</if>
+            <if test="mark != null">mark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="pointsName != null and pointsName != ''">#{pointsName},</if>
+            <if test="pointsAddress != null and pointsAddress != ''">#{pointsAddress},</if>
+            <if test="realTimePower != null">#{realTimePower},</if>
+            <if test="realTimeVolt != null">#{realTimeVolt},</if>
+            <if test="status != null">#{status},</if>
+            <if test="reportTime != null">#{reportTime},</if>
+            <if test="mark != null">#{mark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateDcEnergyPrewarning" parameterType="DcEnergyPrewarning">
+        update dc_energy_prewarning
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="pointsName != null and pointsName != ''">points_name = #{pointsName},</if>
+            <if test="pointsAddress != null and pointsAddress != ''">points_address = #{pointsAddress},</if>
+            <if test="realTimePower != null">real_time_power = #{realTimePower},</if>
+            <if test="realTimeVolt != null">real_time_volt = #{realTimeVolt},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="reportTime != null">report_time = #{reportTime},</if>
+            <if test="mark != null">mark = #{mark},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteDcEnergyPrewarningById" parameterType="Long">
+        delete from dc_energy_prewarning where id = #{id}
+    </delete>
+
+    <delete id="deleteDcEnergyPrewarningByIds" parameterType="String">
+        delete from dc_energy_prewarning where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

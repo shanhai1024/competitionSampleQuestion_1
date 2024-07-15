@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="carbon-ui">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/carbon-ui.zip!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

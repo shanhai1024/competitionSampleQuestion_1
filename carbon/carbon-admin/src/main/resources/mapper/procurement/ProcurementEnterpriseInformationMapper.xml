@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhonghui.procurement.mapper.ProcurementEnterpriseInformationMapper">
+
+    <resultMap id="BaseResultMap" type="com.zhonghui.procurement.domain.ProcurementEnterpriseInformation">
+        <id property="id" column="id" jdbcType="INTEGER"/>
+        <result property="userId" column="user_id" jdbcType="INTEGER"/>
+        <result property="companyProfile" column="company_profile" jdbcType="VARCHAR"/>
+        <result property="validityPeriodOfBusinessLicense" column="validity_period_of_business_license"/>
+        <result property="registeredCapital" column="registered_capital" jdbcType="VARCHAR"/>
+        <result property="unitRegisteredAddress" column="unit_registered_address" jdbcType="VARCHAR"/>
+        <result property="unitRegistrationTelephone" column="unit_registration_telephone" jdbcType="VARCHAR"/>
+        <result property="openingAddress" column="opening_address" jdbcType="VARCHAR"/>
+        <result property="bankAccountNumber" column="bank_account_number" jdbcType="VARCHAR"/>
+        <result property="bankOfDeposit" column="bank_of_deposit" jdbcType="VARCHAR"/>
+        <result property="paidInCapital" column="paid_in_capital" jdbcType="VARCHAR"/>
+        <result property="businessScope" column="business_scope" jdbcType="VARCHAR"/>
+        <result property="corporateContactAddress" column="corporate_contact_address" jdbcType="VARCHAR"/>
+        <result property="corporateIdentityCard" column="corporate_identity_card" jdbcType="VARCHAR"/>
+        <result property="legalPerson" column="legal_person" jdbcType="VARCHAR"/>
+        <result property="enterpriseName" column="enterprise_name" jdbcType="VARCHAR"/>
+        <result property="unifiedSocialInformationCode" column="unified_social_information_code" jdbcType="VARCHAR"/>
+        <result property="companyRegisteredAddress" column="company_registered_address" jdbcType="VARCHAR"/>
+        <result property="mechanismType" column="mechanism_type" jdbcType="VARCHAR"/>
+        <result property="natureOfEnterprise" column="nature_of_enterprise" jdbcType="VARCHAR"/>
+        <result property="dateOfEstablishment" column="date_of_establishment"/>
+        <result property="scLegalPersonIdCard" column="sc_legal_person_ID_card" jdbcType="VARCHAR"/>
+        <result property="scBusinessLicense" column="sc_business_license" jdbcType="VARCHAR"/>
+        <result property="accountOpeningPermit" column="account_opening_permit" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id
+        ,user_id,company_profile,
+        validity_period_of_business_license,registered_capital,unit_registered_address,
+        unit_registration_telephone,opening_address,bank_account_number,
+        bank_of_deposit,paid_in_capital,business_scope,
+        corporate_contact_address,corporate_identity_card,legal_person,
+        enterprise_name,unified_social_information_code,company_registered_address,
+        mechanism_type,nature_of_enterprise,date_of_establishment,
+        sc_legal_person_ID_card,sc_business_license,account_opening_permit
+    </sql>
+
+    <select id="getEnterpriseInformation" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from procurement_enterprise_information
+        where user_id = #{id,jdbcType=INTEGER}
+    </select>
+    <update id="setEnterpriseInformation" parameterType="com.zhonghui.procurement.domain.ProcurementEnterpriseInformation">
+        update procurement_enterprise_information
+        <set>
+            <if test="userId != null">
+                user_id = #{userId,jdbcType=INTEGER},
+            </if>
+            <if test="companyProfile != null">
+                company_profile = #{companyProfile,jdbcType=VARCHAR},
+            </if>
+            <if test="validityPeriodOfBusinessLicense != null">
+                validity_period_of_business_license = #{validityPeriodOfBusinessLicense,jdbcType=VARCHAR},
+            </if>
+            <if test="registeredCapital != null">
+                registered_capital = #{registeredCapital,jdbcType=VARCHAR},
+            </if>
+            <if test="unitRegisteredAddress != null">
+                unit_registered_address = #{unitRegisteredAddress,jdbcType=VARCHAR},
+            </if>
+            <if test="unitRegistrationTelephone != null">
+                unit_registration_telephone = #{unitRegistrationTelephone,jdbcType=VARCHAR},
+            </if>
+            <if test="openingAddress != null">
+                opening_address = #{openingAddress,jdbcType=VARCHAR},
+            </if>
+            <if test="bankAccountNumber != null">
+                bank_account_number = #{bankAccountNumber,jdbcType=VARCHAR},
+            </if>
+            <if test="bankOfDeposit != null">
+                bank_of_deposit = #{bankOfDeposit,jdbcType=VARCHAR},
+            </if>
+            <if test="paidInCapital != null">
+                paid_in_capital = #{paidInCapital,jdbcType=VARCHAR},
+            </if>
+            <if test="businessScope != null">
+                business_scope = #{businessScope,jdbcType=VARCHAR},
+            </if>
+            <if test="corporateContactAddress != null">
+                corporate_contact_address = #{corporateContactAddress,jdbcType=VARCHAR},
+            </if>
+            <if test="corporateIdentityCard != null">
+                corporate_identity_card = #{corporateIdentityCard,jdbcType=VARCHAR},
+            </if>
+            <if test="legalPerson != null">
+                legal_person = #{legalPerson,jdbcType=VARCHAR},
+            </if>
+            <if test="enterpriseName != null">
+                enterprise_name = #{enterpriseName,jdbcType=VARCHAR},
+            </if>
+            <if test="unifiedSocialInformationCode != null">
+                unified_social_information_code = #{unifiedSocialInformationCode,jdbcType=VARCHAR},
+            </if>
+            <if test="companyRegisteredAddress != null">
+                company_registered_address = #{companyRegisteredAddress,jdbcType=VARCHAR},
+            </if>
+            <if test="mechanismType != null">
+                mechanism_type = #{mechanismType,jdbcType=VARCHAR},
+            </if>
+            <if test="natureOfEnterprise != null">
+                nature_of_enterprise = #{natureOfEnterprise,jdbcType=VARCHAR},
+            </if>
+            <if test="dateOfEstablishment != null">
+                date_of_establishment = #{dateOfEstablishment,jdbcType=VARCHAR},
+            </if>
+            <if test="scLegalPersonIdCard != null">
+                sc_legal_person_ID_card = #{scLegalPersonIdCard,jdbcType=VARCHAR},
+            </if>
+            <if test="scBusinessLicense != null">
+                sc_business_license = #{scBusinessLicense,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+</mapper>

@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhonghui.wms.mapper.WmsMaterialMapper">
+    
+    <resultMap type="WmsMaterial" id="WmsMaterialResult">
+        <result property="id"    column="id"    />
+        <result property="classifyId"    column="classify_id"    />
+        <result property="materialCode"    column="material_code"    />
+        <result property="materialName"    column="material_name"    />
+        <result property="materialModel"    column="material_model"    />
+        <result property="materialSpecifications"    column="material_specifications"    />
+        <result property="materialUnit"    column="material_unit"    />
+        <result property="materialPrice"    column="material_price"    />
+        <result property="materialType"    column="material_type"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectWmsMaterialVo">
+        select id, classify_id, material_code, material_name, material_model, material_specifications, material_unit, material_price, material_type, remark from wms_material
+    </sql>
+
+    <select id="selectWmsMaterialList" parameterType="WmsMaterial" resultMap="WmsMaterialResult">
+        <include refid="selectWmsMaterialVo"/>
+        <where>  
+            <if test="classifyId != null "> and classify_id = #{classifyId}</if>
+            <if test="materialCode != null  and materialCode != ''"> and material_code = #{materialCode}</if>
+            <if test="materialName != null  and materialName != ''"> and material_name like concat('%', #{materialName}, '%')</if>
+            <if test="materialModel != null  and materialModel != ''"> and material_model = #{materialModel}</if>
+            <if test="materialSpecifications != null  and materialSpecifications != ''"> and material_specifications = #{materialSpecifications}</if>
+            <if test="materialUnit != null  and materialUnit != ''"> and material_unit = #{materialUnit}</if>
+            <if test="materialPrice != null "> and material_price = #{materialPrice}</if>
+            <if test="materialType != null "> and material_type = #{materialType}</if>
+        </where>
+    </select>
+    
+    <select id="selectWmsMaterialById" parameterType="Long" resultMap="WmsMaterialResult">
+        <include refid="selectWmsMaterialVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertWmsMaterial" parameterType="WmsMaterial" useGeneratedKeys="true" keyProperty="id">
+        insert into wms_material
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="classifyId != null">classify_id,</if>
+            <if test="materialCode != null">material_code,</if>
+            <if test="materialName != null and materialName != ''">material_name,</if>
+            <if test="materialModel != null">material_model,</if>
+            <if test="materialSpecifications != null">material_specifications,</if>
+            <if test="materialUnit != null">material_unit,</if>
+            <if test="materialPrice != null">material_price,</if>
+            <if test="materialType != null">material_type,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="classifyId != null">#{classifyId},</if>
+            <if test="materialCode != null">#{materialCode},</if>
+            <if test="materialName != null and materialName != ''">#{materialName},</if>
+            <if test="materialModel != null">#{materialModel},</if>
+            <if test="materialSpecifications != null">#{materialSpecifications},</if>
+            <if test="materialUnit != null">#{materialUnit},</if>
+            <if test="materialPrice != null">#{materialPrice},</if>
+            <if test="materialType != null">#{materialType},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateWmsMaterial" parameterType="WmsMaterial">
+        update wms_material
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="classifyId != null">classify_id = #{classifyId},</if>
+            <if test="materialCode != null">material_code = #{materialCode},</if>
+            <if test="materialName != null and materialName != ''">material_name = #{materialName},</if>
+            <if test="materialModel != null">material_model = #{materialModel},</if>
+            <if test="materialSpecifications != null">material_specifications = #{materialSpecifications},</if>
+            <if test="materialUnit != null">material_unit = #{materialUnit},</if>
+            <if test="materialPrice != null">material_price = #{materialPrice},</if>
+            <if test="materialType != null">material_type = #{materialType},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteWmsMaterialById" parameterType="Long">
+        delete from wms_material where id = #{id}
+    </delete>
+
+    <delete id="deleteWmsMaterialByIds" parameterType="Long">
+        delete from wms_material where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

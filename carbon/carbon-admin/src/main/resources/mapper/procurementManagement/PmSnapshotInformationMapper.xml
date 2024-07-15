@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhonghui.procurementManagement.mapper.PmSnapshotInformationMapper">
+
+    <resultMap id="BaseResultMap" type="com.zhonghui.procurement.domain.ProcurementSnapshotInformation">
+        <id property="id" column="id" jdbcType="INTEGER"/>
+        <result property="companyProfile" column="company_profile" jdbcType="VARCHAR"/>
+        <result property="validityPeriodOfBusinessLicense" column="validity_period_of_business_license" jdbcType="TIMESTAMP"/>
+        <result property="registeredCapital" column="registered_capital" jdbcType="VARCHAR"/>
+        <result property="unitRegisteredAddress" column="unit_registered_address" jdbcType="VARCHAR"/>
+        <result property="unitRegistrationTelephone" column="unit_registration_telephone" jdbcType="VARCHAR"/>
+        <result property="openingAddress" column="opening_address" jdbcType="VARCHAR"/>
+        <result property="bankAccountNumber" column="bank_account_number" jdbcType="VARCHAR"/>
+        <result property="bankOfDeposit" column="bank_of_deposit" jdbcType="VARCHAR"/>
+        <result property="paidInCapital" column="paid_in_capital" jdbcType="VARCHAR"/>
+        <result property="businessScope" column="business_scope" jdbcType="VARCHAR"/>
+        <result property="corporateContactAddress" column="corporate_contact_address" jdbcType="VARCHAR"/>
+        <result property="corporateIdentityCard" column="corporate_identity_card" jdbcType="VARCHAR"/>
+        <result property="legalPerson" column="legal_person" jdbcType="VARCHAR"/>
+        <result property="enterpriseName" column="enterprise_name" jdbcType="VARCHAR"/>
+        <result property="unifiedSocialInformationCode" column="unified_social_information_code" jdbcType="VARCHAR"/>
+        <result property="companyRegisteredAddress" column="company_registered_address" jdbcType="VARCHAR"/>
+        <result property="mechanismType" column="mechanism_type" jdbcType="VARCHAR"/>
+        <result property="natureOfEnterprise" column="nature_of_enterprise" jdbcType="VARCHAR"/>
+        <result property="dateOfEstablishment" column="date_of_establishment" jdbcType="TIMESTAMP"/>
+        <result property="scLegalPersonIdCard" column="sc_legal_person_ID_card" jdbcType="VARCHAR"/>
+        <result property="scBusinessLicense" column="sc_business_license" jdbcType="VARCHAR"/>
+        <result property="accountOpeningPermit" column="account_opening_permit" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,company_profile,validity_period_of_business_license,
+        registered_capital,unit_registered_address,unit_registration_telephone,
+        opening_address,bank_account_number,bank_of_deposit,
+        paid_in_capital,business_scope,corporate_contact_address,
+        corporate_identity_card,legal_person,enterprise_name,
+        unified_social_information_code,company_registered_address,mechanism_type,
+        nature_of_enterprise,date_of_establishment,sc_legal_person_ID_card,
+        sc_business_license,account_opening_permit
+    </sql>
+
+    <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.zhonghui.procurement.domain.ProcurementSnapshotInformation" useGeneratedKeys="true">
+        insert into procurement_snapshot_information
+        ( company_profile,validity_period_of_business_license
+        ,registered_capital,unit_registered_address,unit_registration_telephone
+        ,opening_address,bank_account_number,bank_of_deposit
+        ,paid_in_capital,business_scope,corporate_contact_address
+        ,corporate_identity_card,legal_person,enterprise_name
+        ,unified_social_information_code,company_registered_address,mechanism_type
+        ,nature_of_enterprise,date_of_establishment,sc_legal_person_ID_card
+        ,sc_business_license,account_opening_permit)
+        values (#{companyProfile,jdbcType=VARCHAR},#{validityPeriodOfBusinessLicense,jdbcType=TIMESTAMP}
+        ,#{registeredCapital,jdbcType=VARCHAR},#{unitRegisteredAddress,jdbcType=VARCHAR},#{unitRegistrationTelephone,jdbcType=VARCHAR}
+        ,#{openingAddress,jdbcType=VARCHAR},#{bankAccountNumber,jdbcType=VARCHAR},#{bankOfDeposit,jdbcType=VARCHAR}
+        ,#{paidInCapital,jdbcType=VARCHAR},#{businessScope,jdbcType=VARCHAR},#{corporateContactAddress,jdbcType=VARCHAR}
+        ,#{corporateIdentityCard,jdbcType=VARCHAR},#{legalPerson,jdbcType=VARCHAR},#{enterpriseName,jdbcType=VARCHAR}
+        ,#{unifiedSocialInformationCode,jdbcType=VARCHAR},#{companyRegisteredAddress,jdbcType=VARCHAR},#{mechanismType,jdbcType=VARCHAR}
+        ,#{natureOfEnterprise,jdbcType=VARCHAR},#{dateOfEstablishment,jdbcType=TIMESTAMP},#{scLegalPersonIdCard,jdbcType=VARCHAR}
+        ,#{scBusinessLicense,jdbcType=VARCHAR},#{accountOpeningPermit,jdbcType=VARCHAR})
+
+    </insert>
+
+    <select id="selectById" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"/> from procurement_snapshot_information where id=#{id}
+    </select>
+
+    <delete id="delById">
+        delete from procurement_snapshot_information where id = #{id}
+    </delete>
+</mapper>

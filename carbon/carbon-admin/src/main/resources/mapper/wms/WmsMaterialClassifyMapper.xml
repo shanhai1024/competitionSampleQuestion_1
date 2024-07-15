@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhonghui.wms.mapper.WmsMaterialClassifyMapper">
+    
+    <resultMap type="WmsMaterialClassify" id="WmsMaterialClassifyResult">
+        <result property="id"    column="id"    />
+        <result property="pid"    column="pid"    />
+        <result property="name"    column="name"    />
+        <result property="code"    column="code"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectWmsMaterialClassifyVo">
+        select id, pid, name, code, remark from wms_material_classify
+    </sql>
+
+    <select id="selectWmsMaterialClassifyList" parameterType="WmsMaterialClassify" resultMap="WmsMaterialClassifyResult">
+        <include refid="selectWmsMaterialClassifyVo"/>
+        <where>  
+            <if test="pid != null "> and pid = #{pid}</if>
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+            <if test="code != null  and code != ''"> and code = #{code}</if>
+        </where>
+    </select>
+    
+    <select id="selectWmsMaterialClassifyById" parameterType="String" resultMap="WmsMaterialClassifyResult">
+        <include refid="selectWmsMaterialClassifyVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertWmsMaterialClassify" parameterType="WmsMaterialClassify" useGeneratedKeys="true" keyProperty="id">
+        insert into wms_material_classify
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="pid != null">pid,</if>
+            <if test="name != null">name,</if>
+            <if test="code != null">code,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="pid != null">#{pid},</if>
+            <if test="name != null">#{name},</if>
+            <if test="code != null">#{code},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateWmsMaterialClassify" parameterType="WmsMaterialClassify">
+        update wms_material_classify
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="pid != null">pid = #{pid},</if>
+            <if test="name != null">name = #{name},</if>
+            <if test="code != null">code = #{code},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteWmsMaterialClassifyById" parameterType="String">
+        delete from wms_material_classify where id = #{id}
+    </delete>
+
+    <delete id="deleteWmsMaterialClassifyByIds" parameterType="String">
+        delete from wms_material_classify where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

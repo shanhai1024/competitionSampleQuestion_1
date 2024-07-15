@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhonghui.procurementManagement.mapper.PmBidMapper">
+    
+    <resultMap type="PmBid" id="PmBidResult">
+        <result property="id"    column="id"    />
+        <result property="bidId"    column="bid_id"    />
+        <result property="snapshotInformation"    column="snapshot_information"    />
+        <result property="userId"    column="user_id"    />
+        <result property="information"    column="information"    />
+    </resultMap>
+
+    <resultMap type="com.zhonghui.procurementManagement.domain.vo.PmBidVo" id="PmBidResultVo">
+        <result property="id"    column="id"    />
+        <result property="bidId"    column="bid_id"    />
+        <result property="snapshotInformation"    column="snapshot_information"/>
+        <result property="userId"    column="user_id"    />
+        <result property="information"    column="information"/>
+        <collection property="pmMark" column="bid_id"
+                    ofType="com.zhonghui.procurementManagement.domain.PmMark"
+                    select="com.zhonghui.procurementManagement.mapper.PmMarkMapper.selectPmMarkByMarkId"/>
+        <collection property="procurementSnapshotInformation" column="snapshot_information"
+                    ofType="com.zhonghui.procurement.domain.ProcurementSnapshotInformation"
+                        select="com.zhonghui.procurement.mapper.ProcurementSnapshotInformationMapper.selectById"/>
+    </resultMap>
+
+    <sql id="selectPmBidVo">
+        select id, bid_id, snapshot_information, user_id, information from procurement_have_bid
+    </sql>
+
+    <select id="selectPmBidListVo" parameterType="PmBid" resultMap="PmBidResultVo">
+        <include refid="selectPmBidVo"/>
+        <where>
+            <if test="bidId != null "> and bid_id = #{bidId}</if>
+            <if test="snapshotInformation != null "> and snapshot_information = #{snapshotInformation}</if>
+            <if test="userId != null "> and user_id = #{userId}</if>
+            <if test="information != null  and information != ''"> and information = #{information}</if>
+        </where>
+    </select>
+
+    <select id="selectPmBidList" parameterType="PmBid" resultMap="PmBidResult">
+        <include refid="selectPmBidVo"/>
+        <where>  
+            <if test="bidId != null "> and bid_id = #{bidId}</if>
+            <if test="snapshotInformation != null "> and snapshot_information = #{snapshotInformation}</if>
+            <if test="userId != null "> and user_id = #{userId}</if>
+            <if test="information != null  and information != ''"> and information = #{information}</if>
+        </where>
+    </select>
+    
+    <select id="selectPmBidById" parameterType="Long" resultMap="PmBidResult">
+        <include refid="selectPmBidVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertPmBid" parameterType="PmBid" useGeneratedKeys="true" keyProperty="id">
+        insert into procurement_have_bid
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="bidId != null">bid_id,</if>
+            <if test="snapshotInformation != null">snapshot_information,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="information != null">information,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="bidId != null">#{bidId},</if>
+            <if test="snapshotInformation != null">#{snapshotInformation},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="information != null">#{information},</if>
+         </trim>
+    </insert>
+
+    <update id="updatePmBid" parameterType="PmBid">
+        update procurement_have_bid
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="bidId != null">bid_id = #{bidId},</if>
+            <if test="snapshotInformation != null">snapshot_information = #{snapshotInformation},</if>
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="information != null">information = #{information},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deletePmBidById" parameterType="Long">
+        delete from procurement_have_bid where id = #{id}
+    </delete>
+
+    <delete id="deletePmBidByIds" parameterType="String">
+        delete from procurement_have_bid where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

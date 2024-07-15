@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhonghui.dc.mapper.DcChangedCarbonEmissionsMapper">
+    
+    <resultMap type="DcChangedCarbonEmissions" id="DcChangedCarbonEmissionsResult">
+        <result property="id"    column="id"    />
+        <result property="name"    column="name"    />
+        <result property="projectType"    column="project_type"    />
+        <result property="daySaveWater"    column="day_save_water"    />
+        <result property="daySaveElectric"    column="day_save_electric"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectDcChangedCarbonEmissionsVo">
+        select id, name, project_type, day_save_water, day_save_electric, remark from dc_changed_carbon_emissions
+    </sql>
+
+    <select id="selectDcChangedCarbonEmissionsList" parameterType="DcChangedCarbonEmissions" resultMap="DcChangedCarbonEmissionsResult">
+        <include refid="selectDcChangedCarbonEmissionsVo"/>
+        <where>  
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+            <if test="projectType != null "> and project_type = #{projectType}</if>
+        </where>
+    </select>
+    
+    <select id="selectDcChangedCarbonEmissionsById" parameterType="Long" resultMap="DcChangedCarbonEmissionsResult">
+        <include refid="selectDcChangedCarbonEmissionsVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertDcChangedCarbonEmissions" parameterType="DcChangedCarbonEmissions" useGeneratedKeys="true" keyProperty="id">
+        insert into dc_changed_carbon_emissions
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="name != null and name != ''">name,</if>
+            <if test="projectType != null">project_type,</if>
+            <if test="daySaveWater != null">day_save_water,</if>
+            <if test="daySaveElectric != null">day_save_electric,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="name != null and name != ''">#{name},</if>
+            <if test="projectType != null">#{projectType},</if>
+            <if test="daySaveWater != null">#{daySaveWater},</if>
+            <if test="daySaveElectric != null">#{daySaveElectric},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateDcChangedCarbonEmissions" parameterType="DcChangedCarbonEmissions">
+        update dc_changed_carbon_emissions
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="name != null and name != ''">name = #{name},</if>
+            <if test="projectType != null">project_type = #{projectType},</if>
+            <if test="daySaveWater != null">day_save_water = #{daySaveWater},</if>
+            <if test="daySaveElectric != null">day_save_electric = #{daySaveElectric},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteDcChangedCarbonEmissionsById" parameterType="Long">
+        delete from dc_changed_carbon_emissions where id = #{id}
+    </delete>
+
+    <delete id="deleteDcChangedCarbonEmissionsByIds" parameterType="String">
+        delete from dc_changed_carbon_emissions where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

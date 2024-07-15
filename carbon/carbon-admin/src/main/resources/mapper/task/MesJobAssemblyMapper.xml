@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhonghui.task.mapper.MesJobAssemblyMapper">
+    
+    <resultMap type="MesJobAssembly" id="MesJobAssemblyResult">
+        <result property="id"    column="id"    />
+        <result property="jobName"    column="job_name"    />
+        <result property="plannedProductionId"    column="planned_production_id"    />
+        <result property="startTime"    column="start_time"    />
+        <result property="endTime"    column="end_time"    />
+        <result property="quantity"    column="quantity"    />
+        <result property="status"    column="status"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectMesJobAssemblyVo">
+        select id, job_name, planned_production_id, start_time, end_time, quantity, status, remark from mes_job_assembly
+    </sql>
+
+    <select id="selectMesJobAssemblyList" parameterType="MesJobAssembly" resultMap="MesJobAssemblyResult">
+        <include refid="selectMesJobAssemblyVo"/>
+        <where>  
+            <if test="jobName != null  and jobName != ''"> and job_name like concat('%', #{jobName}, '%')</if>
+            <if test="plannedProductionId != null "> and planned_production_id = #{plannedProductionId}</if>
+            <if test="startTime != null "> and start_time = #{startTime}</if>
+            <if test="endTime != null "> and end_time = #{endTime}</if>
+            <if test="quantity != null "> and quantity = #{quantity}</if>
+            <if test="status != null "> and status = #{status}</if>
+        </where>
+    </select>
+    
+    <select id="selectMesJobAssemblyById" parameterType="Long" resultMap="MesJobAssemblyResult">
+        <include refid="selectMesJobAssemblyVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertMesJobAssembly" parameterType="MesJobAssembly" useGeneratedKeys="true" keyProperty="id">
+        insert into mes_job_assembly
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="jobName != null">job_name,</if>
+            <if test="plannedProductionId != null">planned_production_id,</if>
+            <if test="startTime != null">start_time,</if>
+            <if test="endTime != null">end_time,</if>
+            <if test="quantity != null">quantity,</if>
+            <if test="status != null">status,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="jobName != null">#{jobName},</if>
+            <if test="plannedProductionId != null">#{plannedProductionId},</if>
+            <if test="startTime != null">#{startTime},</if>
+            <if test="endTime != null">#{endTime},</if>
+            <if test="quantity != null">#{quantity},</if>
+            <if test="status != null">#{status},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateMesJobAssembly" parameterType="MesJobAssembly">
+        update mes_job_assembly
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="jobName != null">job_name = #{jobName},</if>
+            <if test="plannedProductionId != null">planned_production_id = #{plannedProductionId},</if>
+            <if test="startTime != null">start_time = #{startTime},</if>
+            <if test="endTime != null">end_time = #{endTime},</if>
+            <if test="quantity != null">quantity = #{quantity},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteMesJobAssemblyById" parameterType="Long">
+        delete from mes_job_assembly where id = #{id}
+    </delete>
+
+    <delete id="deleteMesJobAssemblyByIds" parameterType="String">
+        delete from mes_job_assembly where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

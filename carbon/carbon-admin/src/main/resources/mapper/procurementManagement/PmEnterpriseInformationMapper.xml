@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhonghui.procurementManagement.mapper.PmEnterpriseInformationMapper">
+    
+    <resultMap type="PmEnterpriseInformation" id="PmEnterpriseInformationResult">
+        <result property="id"    column="id"    />
+        <result property="userId"    column="user_id"    />
+        <result property="companyProfile"    column="company_profile"    />
+        <result property="validityPeriodOfBusinessLicense"    column="validity_period_of_business_license"    />
+        <result property="registeredCapital"    column="registered_capital"    />
+        <result property="unitRegisteredAddress"    column="unit_registered_address"    />
+        <result property="unitRegistrationTelephone"    column="unit_registration_telephone"    />
+        <result property="openingAddress"    column="opening_address"    />
+        <result property="bankAccountNumber"    column="bank_account_number"    />
+        <result property="bankOfDeposit"    column="bank_of_deposit"    />
+        <result property="paidInCapital"    column="paid_in_capital"    />
+        <result property="businessScope"    column="business_scope"    />
+        <result property="corporateContactAddress"    column="corporate_contact_address"    />
+        <result property="corporateIdentityCard"    column="corporate_identity_card"    />
+        <result property="legalPerson"    column="legal_person"    />
+        <result property="enterpriseName"    column="enterprise_name"    />
+        <result property="unifiedSocialInformationCode"    column="unified_social_information_code"    />
+        <result property="companyRegisteredAddress"    column="company_registered_address"    />
+        <result property="mechanismType"    column="mechanism_type"    />
+        <result property="natureOfEnterprise"    column="nature_of_enterprise"    />
+        <result property="dateOfEstablishment"    column="date_of_establishment"    />
+        <result property="scLegalPersonIdCard"    column="sc_legal_person_ID_card"    />
+        <result property="scBusinessLicense"    column="sc_business_license"    />
+        <result property="accountOpeningPermit"    column="account_opening_permit"    />
+    </resultMap>
+
+    <sql id="selectPmEnterpriseInformationVo">
+        select id, user_id, company_profile, validity_period_of_business_license, registered_capital, unit_registered_address, unit_registration_telephone, opening_address, bank_account_number, bank_of_deposit, paid_in_capital, business_scope, corporate_contact_address, corporate_identity_card, legal_person, enterprise_name, unified_social_information_code, company_registered_address, mechanism_type, nature_of_enterprise, date_of_establishment, sc_legal_person_ID_card, sc_business_license, account_opening_permit from procurement_enterprise_information
+    </sql>
+
+    <select id="selectPmEnterpriseInformationList" parameterType="PmEnterpriseInformation" resultMap="PmEnterpriseInformationResult">
+        <include refid="selectPmEnterpriseInformationVo"/>
+        <where>  
+            <if test="enterpriseName != null  and enterpriseName != ''"> and enterprise_name like concat('%', #{enterpriseName}, '%')</if>
+        </where>
+    </select>
+    
+    <select id="selectPmEnterpriseInformationById" parameterType="Long" resultMap="PmEnterpriseInformationResult">
+        <include refid="selectPmEnterpriseInformationVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertPmEnterpriseInformation" parameterType="PmEnterpriseInformation">
+        insert into procurement_enterprise_information
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null">user_id,</if>
+            <if test="companyProfile != null and companyProfile != ''">company_profile,</if>
+            <if test="validityPeriodOfBusinessLicense != null">validity_period_of_business_license,</if>
+            <if test="registeredCapital != null and registeredCapital != ''">registered_capital,</if>
+            <if test="unitRegisteredAddress != null and unitRegisteredAddress != ''">unit_registered_address,</if>
+            <if test="unitRegistrationTelephone != null and unitRegistrationTelephone != ''">unit_registration_telephone,</if>
+            <if test="openingAddress != null and openingAddress != ''">opening_address,</if>
+            <if test="bankAccountNumber != null and bankAccountNumber != ''">bank_account_number,</if>
+            <if test="bankOfDeposit != null and bankOfDeposit != ''">bank_of_deposit,</if>
+            <if test="paidInCapital != null and paidInCapital != ''">paid_in_capital,</if>
+            <if test="businessScope != null and businessScope != ''">business_scope,</if>
+            <if test="corporateContactAddress != null and corporateContactAddress != ''">corporate_contact_address,</if>
+            <if test="corporateIdentityCard != null and corporateIdentityCard != ''">corporate_identity_card,</if>
+            <if test="legalPerson != null and legalPerson != ''">legal_person,</if>
+            <if test="enterpriseName != null and enterpriseName != ''">enterprise_name,</if>
+            <if test="unifiedSocialInformationCode != null and unifiedSocialInformationCode != ''">unified_social_information_code,</if>
+            <if test="companyRegisteredAddress != null and companyRegisteredAddress != ''">company_registered_address,</if>
+            <if test="mechanismType != null and mechanismType != ''">mechanism_type,</if>
+            <if test="natureOfEnterprise != null and natureOfEnterprise != ''">nature_of_enterprise,</if>
+            <if test="dateOfEstablishment != null">date_of_establishment,</if>
+            <if test="scLegalPersonIdCard != null and scLegalPersonIdCard != ''">sc_legal_person_ID_card,</if>
+            <if test="scBusinessLicense != null and scBusinessLicense != ''">sc_business_license,</if>
+            <if test="accountOpeningPermit != null and accountOpeningPermit != ''">account_opening_permit,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="companyProfile != null and companyProfile != ''">#{companyProfile},</if>
+            <if test="validityPeriodOfBusinessLicense != null">#{validityPeriodOfBusinessLicense},</if>
+            <if test="registeredCapital != null and registeredCapital != ''">#{registeredCapital},</if>
+            <if test="unitRegisteredAddress != null and unitRegisteredAddress != ''">#{unitRegisteredAddress},</if>
+            <if test="unitRegistrationTelephone != null and unitRegistrationTelephone != ''">#{unitRegistrationTelephone},</if>
+            <if test="openingAddress != null and openingAddress != ''">#{openingAddress},</if>
+            <if test="bankAccountNumber != null and bankAccountNumber != ''">#{bankAccountNumber},</if>
+            <if test="bankOfDeposit != null and bankOfDeposit != ''">#{bankOfDeposit},</if>
+            <if test="paidInCapital != null and paidInCapital != ''">#{paidInCapital},</if>
+            <if test="businessScope != null and businessScope != ''">#{businessScope},</if>
+            <if test="corporateContactAddress != null and corporateContactAddress != ''">#{corporateContactAddress},</if>
+            <if test="corporateIdentityCard != null and corporateIdentityCard != ''">#{corporateIdentityCard},</if>
+            <if test="legalPerson != null and legalPerson != ''">#{legalPerson},</if>
+            <if test="enterpriseName != null and enterpriseName != ''">#{enterpriseName},</if>
+            <if test="unifiedSocialInformationCode != null and unifiedSocialInformationCode != ''">#{unifiedSocialInformationCode},</if>
+            <if test="companyRegisteredAddress != null and companyRegisteredAddress != ''">#{companyRegisteredAddress},</if>
+            <if test="mechanismType != null and mechanismType != ''">#{mechanismType},</if>
+            <if test="natureOfEnterprise != null and natureOfEnterprise != ''">#{natureOfEnterprise},</if>
+            <if test="dateOfEstablishment != null">#{dateOfEstablishment},</if>
+            <if test="scLegalPersonIdCard != null and scLegalPersonIdCard != ''">#{scLegalPersonIdCard},</if>
+            <if test="scBusinessLicense != null and scBusinessLicense != ''">#{scBusinessLicense},</if>
+            <if test="accountOpeningPermit != null and accountOpeningPermit != ''">#{accountOpeningPermit},</if>
+         </trim>
+    </insert>
+
+    <update id="updatePmEnterpriseInformation" parameterType="PmEnterpriseInformation">
+        update procurement_enterprise_information
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="companyProfile != null and companyProfile != ''">company_profile = #{companyProfile},</if>
+            <if test="validityPeriodOfBusinessLicense != null">validity_period_of_business_license = #{validityPeriodOfBusinessLicense},</if>
+            <if test="registeredCapital != null and registeredCapital != ''">registered_capital = #{registeredCapital},</if>
+            <if test="unitRegisteredAddress != null and unitRegisteredAddress != ''">unit_registered_address = #{unitRegisteredAddress},</if>
+            <if test="unitRegistrationTelephone != null and unitRegistrationTelephone != ''">unit_registration_telephone = #{unitRegistrationTelephone},</if>
+            <if test="openingAddress != null and openingAddress != ''">opening_address = #{openingAddress},</if>
+            <if test="bankAccountNumber != null and bankAccountNumber != ''">bank_account_number = #{bankAccountNumber},</if>
+            <if test="bankOfDeposit != null and bankOfDeposit != ''">bank_of_deposit = #{bankOfDeposit},</if>
+            <if test="paidInCapital != null and paidInCapital != ''">paid_in_capital = #{paidInCapital},</if>
+            <if test="businessScope != null and businessScope != ''">business_scope = #{businessScope},</if>
+            <if test="corporateContactAddress != null and corporateContactAddress != ''">corporate_contact_address = #{corporateContactAddress},</if>
+            <if test="corporateIdentityCard != null and corporateIdentityCard != ''">corporate_identity_card = #{corporateIdentityCard},</if>
+            <if test="legalPerson != null and legalPerson != ''">legal_person = #{legalPerson},</if>
+            <if test="enterpriseName != null and enterpriseName != ''">enterprise_name = #{enterpriseName},</if>
+            <if test="unifiedSocialInformationCode != null and unifiedSocialInformationCode != ''">unified_social_information_code = #{unifiedSocialInformationCode},</if>
+            <if test="companyRegisteredAddress != null and companyRegisteredAddress != ''">company_registered_address = #{companyRegisteredAddress},</if>
+            <if test="mechanismType != null and mechanismType != ''">mechanism_type = #{mechanismType},</if>
+            <if test="natureOfEnterprise != null and natureOfEnterprise != ''">nature_of_enterprise = #{natureOfEnterprise},</if>
+            <if test="dateOfEstablishment != null">date_of_establishment = #{dateOfEstablishment},</if>
+            <if test="scLegalPersonIdCard != null and scLegalPersonIdCard != ''">sc_legal_person_ID_card = #{scLegalPersonIdCard},</if>
+            <if test="scBusinessLicense != null and scBusinessLicense != ''">sc_business_license = #{scBusinessLicense},</if>
+            <if test="accountOpeningPermit != null and accountOpeningPermit != ''">account_opening_permit = #{accountOpeningPermit},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deletePmEnterpriseInformationById" parameterType="Long">
+        delete from procurement_enterprise_information where id = #{id}
+    </delete>
+
+    <delete id="deletePmEnterpriseInformationByIds" parameterType="String">
+        delete from procurement_enterprise_information where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

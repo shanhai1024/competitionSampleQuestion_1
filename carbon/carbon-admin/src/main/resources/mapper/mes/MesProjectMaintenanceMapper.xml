@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhonghui.mes.mapper.MesProjectMaintenanceMapper">
+    
+    <resultMap type="MesProjectMaintenance" id="MesProjectMaintenanceResult">
+        <result property="id"    column="id"    />
+        <result property="projectName"    column="project_name"    />
+        <result property="projectHeader"    column="project_header"    />
+        <result property="startDate"    column="start_date"    />
+        <result property="endDate"    column="end_date"    />
+        <result property="status"    column="status"    />
+        <result property="introduce"    column="introduce"    />
+    </resultMap>
+
+    <sql id="selectMesProjectMaintenanceVo">
+        select id, project_name, project_header, start_date, end_date, status, introduce from mes_project_maintenance
+    </sql>
+
+    <select id="selectMesProjectMaintenanceList" parameterType="MesProjectMaintenance" resultMap="MesProjectMaintenanceResult">
+        <include refid="selectMesProjectMaintenanceVo"/>
+        <where>  
+            <if test="projectName != null  and projectName != ''"> and project_name like concat('%', #{projectName}, '%')</if>
+            <if test="params.beginStartDate != null and params.beginStartDate != '' and params.endStartDate != null and params.endStartDate != ''"> and start_date between #{params.beginStartDate} and #{params.endStartDate}</if>
+            <if test="params.beginEndDate != null and params.beginEndDate != '' and params.endEndDate != null and params.endEndDate != ''"> and end_date between #{params.beginEndDate} and #{params.endEndDate}</if>
+            <if test="status != null "> and status = #{status}</if>
+        </where>
+    </select>
+    
+    <select id="selectMesProjectMaintenanceById" parameterType="Integer" resultMap="MesProjectMaintenanceResult">
+        <include refid="selectMesProjectMaintenanceVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertMesProjectMaintenance" parameterType="MesProjectMaintenance">
+        insert into mes_project_maintenance
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="projectName != null and projectName != ''">project_name,</if>
+            <if test="projectHeader != null and projectHeader != ''">project_header,</if>
+            <if test="startDate != null">start_date,</if>
+            <if test="endDate != null">end_date,</if>
+            <if test="status != null">status,</if>
+            <if test="introduce != null">introduce,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="projectName != null and projectName != ''">#{projectName},</if>
+            <if test="projectHeader != null and projectHeader != ''">#{projectHeader},</if>
+            <if test="startDate != null">#{startDate},</if>
+            <if test="endDate != null">#{endDate},</if>
+            <if test="status != null">#{status},</if>
+            <if test="introduce != null">#{introduce},</if>
+         </trim>
+    </insert>
+
+    <update id="updateMesProjectMaintenance" parameterType="MesProjectMaintenance">
+        update mes_project_maintenance
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="projectName != null and projectName != ''">project_name = #{projectName},</if>
+            <if test="projectHeader != null and projectHeader != ''">project_header = #{projectHeader},</if>
+            <if test="startDate != null">start_date = #{startDate},</if>
+            <if test="endDate != null">end_date = #{endDate},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="introduce != null">introduce = #{introduce},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteMesProjectMaintenanceById" parameterType="Integer">
+        delete from mes_project_maintenance where id = #{id}
+    </delete>
+
+    <delete id="deleteMesProjectMaintenanceByIds" parameterType="String">
+        delete from mes_project_maintenance where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

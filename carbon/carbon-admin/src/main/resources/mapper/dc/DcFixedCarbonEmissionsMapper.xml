@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhonghui.dc.mapper.DcFixedCarbonEmissionsMapper">
+    
+    <resultMap type="DcFixedCarbonEmissions" id="DcFixedCarbonEmissionsResult">
+        <result property="id"    column="id"    />
+        <result property="name"    column="name"    />
+        <result property="projectType"    column="project_type"    />
+        <result property="timeType"    column="time_type"    />
+        <result property="energyConsumptionAmount"    column="energy_consumption_amount"    />
+        <result property="warningThreshold"    column="warning_threshold"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectDcFixedCarbonEmissionsVo">
+        select id, name, project_type, time_type, energy_consumption_amount, warning_threshold, remark from dc_fixed_carbon_emissions
+    </sql>
+
+    <select id="selectDcFixedCarbonEmissionsList" parameterType="DcFixedCarbonEmissions" resultMap="DcFixedCarbonEmissionsResult">
+        <include refid="selectDcFixedCarbonEmissionsVo"/>
+        <where>  
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+            <if test="projectType != null "> and project_type = #{projectType}</if>
+            <if test="timeType != null "> and time_type = #{timeType}</if>
+        </where>
+    </select>
+    
+    <select id="selectDcFixedCarbonEmissionsById" parameterType="Long" resultMap="DcFixedCarbonEmissionsResult">
+        <include refid="selectDcFixedCarbonEmissionsVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertDcFixedCarbonEmissions" parameterType="DcFixedCarbonEmissions" useGeneratedKeys="true" keyProperty="id">
+        insert into dc_fixed_carbon_emissions
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="name != null and name != ''">name,</if>
+            <if test="projectType != null">project_type,</if>
+            <if test="timeType != null">time_type,</if>
+            <if test="energyConsumptionAmount != null">energy_consumption_amount,</if>
+            <if test="warningThreshold != null">warning_threshold,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="name != null and name != ''">#{name},</if>
+            <if test="projectType != null">#{projectType},</if>
+            <if test="timeType != null">#{timeType},</if>
+            <if test="energyConsumptionAmount != null">#{energyConsumptionAmount},</if>
+            <if test="warningThreshold != null">#{warningThreshold},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateDcFixedCarbonEmissions" parameterType="DcFixedCarbonEmissions">
+        update dc_fixed_carbon_emissions
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="name != null and name != ''">name = #{name},</if>
+            <if test="projectType != null">project_type = #{projectType},</if>
+            <if test="timeType != null">time_type = #{timeType},</if>
+            <if test="energyConsumptionAmount != null">energy_consumption_amount = #{energyConsumptionAmount},</if>
+            <if test="warningThreshold != null">warning_threshold = #{warningThreshold},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteDcFixedCarbonEmissionsById" parameterType="Long">
+        delete from dc_fixed_carbon_emissions where id = #{id}
+    </delete>
+
+    <delete id="deleteDcFixedCarbonEmissionsByIds" parameterType="String">
+        delete from dc_fixed_carbon_emissions where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

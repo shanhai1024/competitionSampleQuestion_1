@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhonghui.productionScheduling.mapper.MesPlannedProductionMapper">
+    
+    <resultMap type="MesPlannedProduction" id="MesPlannedProductionResult">
+        <result property="id"    column="id"    />
+        <result property="serialNo"    column="serial_no"    />
+        <result property="productionPlanId"    column="production_plan_id"    />
+        <result property="materialId"    column="material_id"    />
+        <result property="bomId"    column="bom_id"    />
+        <result property="factoryId"    column="factory_id"    />
+        <result property="technologyId"    column="technology_id"    />
+        <result property="producedQuantity"    column="produced_quantity"    />
+        <result property="quantityProduced"    column="quantity_produced"    />
+        <result property="manufactureDate"    column="manufacture_date"    />
+        <result property="deliveryDate"    column="delivery_date"    />
+        <result property="status"    column="status"    />
+        <result property="pickingStatus"    column="picking_status"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectMesPlannedProductionVo">
+        select id, serial_no, production_plan_id, material_id, bom_id, factory_id, technology_id, produced_quantity, quantity_produced, manufacture_date, delivery_date, status, picking_status, remark from mes_planned_production
+    </sql>
+
+    <select id="selectMesPlannedProductionList" parameterType="MesPlannedProduction" resultMap="MesPlannedProductionResult">
+        <include refid="selectMesPlannedProductionVo"/>
+        <where>  
+            <if test="serialNo != null  and serialNo != ''"> and serial_no = #{serialNo}</if>
+            <if test="productionPlanId != null "> and production_plan_id = #{productionPlanId}</if>
+            <if test="materialId != null "> and material_id = #{materialId}</if>
+            <if test="bomId != null "> and bom_id = #{bomId}</if>
+            <if test="factoryId != null "> and factory_id = #{factoryId}</if>
+            <if test="technologyId != null "> and technology_id = #{technologyId}</if>
+            <if test="producedQuantity != null "> and produced_quantity = #{producedQuantity}</if>
+            <if test="quantityProduced != null "> and quantity_produced = #{quantityProduced}</if>
+            <if test="manufactureDate != null "> and manufacture_date = #{manufactureDate}</if>
+            <if test="deliveryDate != null "> and delivery_date = #{deliveryDate}</if>
+            <if test="status != null "> and status = #{status}</if>
+            <if test="pickingStatus != null "> and picking_status = #{pickingStatus}</if>
+        </where>
+    </select>
+    
+    <select id="selectMesPlannedProductionById" parameterType="Long" resultMap="MesPlannedProductionResult">
+        <include refid="selectMesPlannedProductionVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertMesPlannedProduction" parameterType="MesPlannedProduction" useGeneratedKeys="true" keyProperty="id">
+        insert into mes_planned_production
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="serialNo != null">serial_no,</if>
+            <if test="productionPlanId != null">production_plan_id,</if>
+            <if test="materialId != null">material_id,</if>
+            <if test="bomId != null">bom_id,</if>
+            <if test="factoryId != null">factory_id,</if>
+            <if test="technologyId != null">technology_id,</if>
+            <if test="producedQuantity != null">produced_quantity,</if>
+            <if test="quantityProduced != null">quantity_produced,</if>
+            <if test="manufactureDate != null">manufacture_date,</if>
+            <if test="deliveryDate != null">delivery_date,</if>
+            <if test="status != null">status,</if>
+            <if test="pickingStatus != null">picking_status,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="serialNo != null">#{serialNo},</if>
+            <if test="productionPlanId != null">#{productionPlanId},</if>
+            <if test="materialId != null">#{materialId},</if>
+            <if test="bomId != null">#{bomId},</if>
+            <if test="factoryId != null">#{factoryId},</if>
+            <if test="technologyId != null">#{technologyId},</if>
+            <if test="producedQuantity != null">#{producedQuantity},</if>
+            <if test="quantityProduced != null">#{quantityProduced},</if>
+            <if test="manufactureDate != null">#{manufactureDate},</if>
+            <if test="deliveryDate != null">#{deliveryDate},</if>
+            <if test="status != null">#{status},</if>
+            <if test="pickingStatus != null">#{pickingStatus},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateMesPlannedProduction" parameterType="MesPlannedProduction">
+        update mes_planned_production
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="serialNo != null">serial_no = #{serialNo},</if>
+            <if test="productionPlanId != null">production_plan_id = #{productionPlanId},</if>
+            <if test="materialId != null">material_id = #{materialId},</if>
+            <if test="bomId != null">bom_id = #{bomId},</if>
+            <if test="factoryId != null">factory_id = #{factoryId},</if>
+            <if test="technologyId != null">technology_id = #{technologyId},</if>
+            <if test="producedQuantity != null">produced_quantity = #{producedQuantity},</if>
+            <if test="quantityProduced != null">quantity_produced = #{quantityProduced},</if>
+            <if test="manufactureDate != null">manufacture_date = #{manufactureDate},</if>
+            <if test="deliveryDate != null">delivery_date = #{deliveryDate},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="pickingStatus != null">picking_status = #{pickingStatus},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteMesPlannedProductionById" parameterType="Long">
+        delete from mes_planned_production where id = #{id}
+    </delete>
+
+    <delete id="deleteMesPlannedProductionByIds" parameterType="String">
+        delete from mes_planned_production where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

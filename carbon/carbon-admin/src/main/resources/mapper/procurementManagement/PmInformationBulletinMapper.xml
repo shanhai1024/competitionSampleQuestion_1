@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhonghui.procurementManagement.mapper.PmInformationBulletinMapper">
+    
+    <resultMap type="PmInformationBulletin" id="PmInformationBulletinResult">
+        <result property="listId"    column="list_id"    />
+        <result property="title"    column="title"    />
+        <result property="releaseTime"    column="release_time"    />
+        <result property="text"    column="text"    />
+        <result property="attachment"    column="attachment"    />
+        <result property="publisher"    column="publisher"    />
+        <result property="listType"    column="list_type"    />
+        <result property="announcementType"    column="announcement_type"    />
+    </resultMap>
+
+    <sql id="selectPmInformationBulletinVo">
+        select list_id, title, release_time, text, attachment, publisher, list_type, announcement_type from procurement_list
+    </sql>
+
+    <select id="selectPmInformationBulletinList" parameterType="PmInformationBulletin" resultMap="PmInformationBulletinResult">
+        <include refid="selectPmInformationBulletinVo"/>
+        <where>  
+            <if test="title != null  and title != ''"> and title = #{title}</if>
+            <if test="announcementType != null  and announcementType != ''"> and announcement_type = #{announcementType}</if>
+            <if test="listType != null  and listType != ''"> and list_type = #{listType}</if>
+        </where>
+    </select>
+    
+    <select id="selectPmInformationBulletinByListId" parameterType="Integer" resultMap="PmInformationBulletinResult">
+        <include refid="selectPmInformationBulletinVo"/>
+        where list_id = #{listId}
+    </select>
+        
+    <insert id="insertPmInformationBulletin" parameterType="PmInformationBulletin" useGeneratedKeys="true" keyProperty="listId">
+        insert into procurement_list
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="title != null and title != ''">title,</if>
+            <if test="releaseTime != null">release_time,</if>
+            <if test="text != null and text != ''">text,</if>
+            <if test="attachment != null">attachment,</if>
+            <if test="publisher != null and publisher != ''">publisher,</if>
+            <if test="listType != null">list_type,</if>
+            <if test="announcementType != null">announcement_type,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="title != null and title != ''">#{title},</if>
+            <if test="releaseTime != null">#{releaseTime},</if>
+            <if test="text != null and text != ''">#{text},</if>
+            <if test="attachment != null">#{attachment},</if>
+            <if test="publisher != null and publisher != ''">#{publisher},</if>
+            <if test="listType != null">#{listType},</if>
+            <if test="announcementType != null">#{announcementType},</if>
+         </trim>
+    </insert>
+
+    <update id="updatePmInformationBulletin" parameterType="PmInformationBulletin">
+        update procurement_list
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="title != null and title != ''">title = #{title},</if>
+            <if test="releaseTime != null">release_time = #{releaseTime},</if>
+            <if test="text != null and text != ''">text = #{text},</if>
+            <if test="attachment != null">attachment = #{attachment},</if>
+            <if test="publisher != null and publisher != ''">publisher = #{publisher},</if>
+            <if test="listType != null">list_type = #{listType},</if>
+            <if test="announcementType != null">announcement_type = #{announcementType},</if>
+        </trim>
+        where list_id = #{listId}
+    </update>
+
+    <delete id="deletePmInformationBulletinByListId" parameterType="Integer">
+        delete from procurement_list where list_id = #{listId}
+    </delete>
+
+    <delete id="deletePmInformationBulletinByListIds" parameterType="String">
+        delete from procurement_list where list_id in 
+        <foreach item="listId" collection="array" open="(" separator="," close=")">
+            #{listId}
+        </foreach>
+    </delete>
+</mapper>

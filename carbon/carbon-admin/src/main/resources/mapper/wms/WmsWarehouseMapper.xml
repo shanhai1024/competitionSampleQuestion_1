@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhonghui.wms.mapper.WmsWarehouseMapper">
+    
+    <resultMap type="WmsWarehouse" id="WmsWarehouseResult">
+        <result property="id"    column="id"    />
+        <result property="warehouseCode"    column="warehouse_code"    />
+        <result property="warehouseName"    column="warehouse_name"    />
+    </resultMap>
+
+    <resultMap id="WmsWarehouseWmsWarehouseAreaResult" type="WmsWarehouse" extends="WmsWarehouseResult">
+        <collection property="wmsWarehouseAreaList" notNullColumn="sub_id" javaType="java.util.List" resultMap="WmsWarehouseAreaResult" />
+    </resultMap>
+
+    <resultMap type="WmsWarehouseArea" id="WmsWarehouseAreaResult">
+        <result property="id"    column="sub_id"    />
+        <result property="warehouseId"    column="sub_warehouse_id"    />
+        <result property="areaCode"    column="sub_area_code"    />
+        <result property="areaName"    column="sub_area_name"    />
+    </resultMap>
+
+    <sql id="selectWmsWarehouseVo">
+        select id, warehouse_code, warehouse_name from wms_warehouse
+    </sql>
+
+    <select id="selectWmsWarehouseList" parameterType="WmsWarehouse" resultMap="WmsWarehouseResult">
+        <include refid="selectWmsWarehouseVo"/>
+        <where>  
+            <if test="warehouseCode != null  and warehouseCode != ''"> and warehouse_code = #{warehouseCode}</if>
+            <if test="warehouseName != null  and warehouseName != ''"> and warehouse_name like concat('%', #{warehouseName}, '%')</if>
+        </where>
+    </select>
+    
+    <select id="selectWmsWarehouseById" parameterType="Long" resultMap="WmsWarehouseWmsWarehouseAreaResult">
+        select a.id, a.warehouse_code, a.warehouse_name,
+ b.id as sub_id, b.warehouse_id as sub_warehouse_id, b.area_code as sub_area_code, b.area_name as sub_area_name
+        from wms_warehouse a
+        left join wms_warehouse_area b on b.warehouse_id = a.id
+        where a.id = #{id}
+    </select>
+        
+    <insert id="insertWmsWarehouse" parameterType="WmsWarehouse" useGeneratedKeys="true" keyProperty="id">
+        insert into wms_warehouse
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="warehouseCode != null">warehouse_code,</if>
+            <if test="warehouseName != null">warehouse_name,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="warehouseCode != null">#{warehouseCode},</if>
+            <if test="warehouseName != null">#{warehouseName},</if>
+         </trim>
+    </insert>
+
+    <update id="updateWmsWarehouse" parameterType="WmsWarehouse">
+        update wms_warehouse
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="warehouseCode != null">warehouse_code = #{warehouseCode},</if>
+            <if test="warehouseName != null">warehouse_name = #{warehouseName},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteWmsWarehouseById" parameterType="Long">
+        delete from wms_warehouse where id = #{id}
+    </delete>
+
+    <delete id="deleteWmsWarehouseByIds" parameterType="String">
+        delete from wms_warehouse where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+    <delete id="deleteWmsWarehouseAreaByWarehouseIds" parameterType="String">
+        delete from wms_warehouse_area where warehouse_id in 
+        <foreach item="warehouseId" collection="array" open="(" separator="," close=")">
+            #{warehouseId}
+        </foreach>
+    </delete>
+
+    <delete id="deleteWmsWarehouseAreaByWarehouseId" parameterType="Long">
+        delete from wms_warehouse_area where warehouse_id = #{warehouseId}
+    </delete>
+
+    <insert id="batchWmsWarehouseArea">
+        insert into wms_warehouse_area( warehouse_id, area_code, area_name) values
+		<foreach item="item" index="index" collection="list" separator=",">
+            (#{item.warehouseId}, #{item.areaCode}, #{item.areaName})
+        </foreach>
+    </insert>
+</mapper>

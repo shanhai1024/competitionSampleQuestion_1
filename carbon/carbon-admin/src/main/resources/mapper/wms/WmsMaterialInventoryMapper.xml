@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhonghui.wms.mapper.WmsMaterialInventoryMapper">
+
+    <resultMap type="WmsMaterialInventory" id="WmsMaterialInventoryResult">
+        <result property="id"    column="id"    />
+        <result property="warehouseId"    column="warehouse_id"    />
+        <result property="materialId"    column="material_id"    />
+        <result property="totalInventory"    column="total_inventory"    />
+        <result property="lockInventory"    column="lock_inventory"    />
+        <result property="inventoryLimit"    column="inventory_limit"    />
+        <result property="inventoryLower"    column="inventory_lower"    />
+    </resultMap>
+
+    <resultMap type="WmsMaterialInventoryVo" id="WmsMaterialInventoryVoResult">
+        <result property="id"    column="id"    />
+        <result property="warehouseId"    column="warehouse_id"    />
+        <result property="warehouseName"    column="warehouse_name"    />
+        <result property="materialId"    column="material_id"    />
+        <result property="materialCode"    column="material_code"    />
+        <result property="materialName"    column="material_name"    />
+        <result property="materialModel"    column="material_model"    />
+        <result property="materialSpecifications"    column="material_specifications"    />
+        <result property="materialUnit"    column="material_unit"    />
+        <result property="materialPrice"    column="material_price"    />
+        <result property="totalInventory"    column="total_inventory"    />
+        <result property="lockInventory"    column="lock_inventory"    />
+        <result property="inventoryLimit"    column="inventory_limit"    />
+        <result property="inventoryLower"    column="inventory_lower"    />
+    </resultMap>
+
+    <resultMap id="WmsMaterialInventoryWmsInventoryDetailsResult" type="WmsMaterialInventory" extends="WmsMaterialInventoryResult">
+        <collection property="wmsInventoryDetailsList" notNullColumn="sub_id" javaType="java.util.List" resultMap="WmsInventoryDetailsResult" />
+    </resultMap>
+
+    <resultMap id="WmsMaterialInventoryVoWmsInventoryDetailsResult" type="WmsMaterialInventoryVo" extends="WmsMaterialInventoryVoResult">
+        <collection property="wmsInventoryDetailsList" notNullColumn="sub_id" javaType="java.util.List" resultMap="WmsInventoryDetailsResult" />
+    </resultMap>
+
+    <resultMap type="WmsInventoryDetails" id="WmsInventoryDetailsResult">
+        <result property="id"    column="sub_id"    />
+        <result property="materialInventoryId"    column="sub_inventory_id"    />
+        <result property="warehouseAreaId"    column="sub_warehouse_area_id"    />
+        <result property="warehouseSeatId"    column="sub_warehouse_seat_id"    />
+        <result property="existingInventory"    column="sub_existing_inventory"    />
+        <result property="lockInventory"    column="sub_lock_inventory"    />
+        <result property="manufactureDate"    column="sub_manufacture_date"    />
+        <result property="manufacturer"    column="sub_manufacturer"    />
+        <result property="batchNumber"    column="sub_batch_number"    />
+        <result property="remark"    column="sub_remark"    />
+    </resultMap>
+
+    <sql id="selectWmsMaterialInventoryVo">
+        select a.id, warehouse_id, material_id, total_inventory, lock_inventory, inventory_limit, inventory_lower,
+               b.warehouse_name, c.material_code, c.material_name, c.material_model, c.material_specifications, c.material_unit, c.material_price
+        from wms_material_inventory a
+    </sql>
+
+    <select id="selectWmsMaterialInventoryList" parameterType="WmsMaterialInventoryVo" resultMap="WmsMaterialInventoryVoResult">
+        <include refid="selectWmsMaterialInventoryVo"/>
+        left join wms_warehouse b on a.warehouse_id = b.id
+        left join wms_material c on a.material_id = c.id
+        <where>
+            <if test="materialId != null  and materialId != ''"> and a.material_id like concat('%', #{materialId}, '%')</if>
+            <if test="warehouseId != null  and warehouseId != ''"> and a.warehouse_id like concat('%', #{warehouseId}, '%')</if>
+            <if test="materialName != null  and materialName != ''"> and c.material_name like concat('%', #{materialName}, '%')</if>
+            <if test="materialModel != null  and materialModel != ''"> and c.material_model like concat('%', #{materialModel}, '%')</if>
+            <if test="materialSpecifications != null  and materialSpecifications != ''"> and c.material_specifications like concat('%', #{materialSpecifications}, '%')</if>
+        </where>
+    </select>
+
+    <select id="selectWmsMaterialInventoryById" parameterType="Long" resultMap="WmsMaterialInventoryWmsInventoryDetailsResult">
+        select a.id, a.warehouse_id, a.material_id, a.total_inventory, a.lock_inventory, a.inventory_limit, a.inventory_lower,
+ b.id as sub_id, b.material_inventory_id as sub_inventory_id, b.area_id as sub_warehouse_area_id, b.seat_id as sub_warehouse_seat_id, b.existing_inventory as sub_existing_inventory, b.manufacture_date as sub_manufacture_date, b.manufacturer as sub_manufacturer, b.batch_number as sub_batch_number,b.lock_inventory as sub_lock_inventory, b.remark as sub_remark
+        from wms_material_inventory a
+        left join wms_material_inventory_details b on b.material_inventory_id = a.id
+        where a.id = #{id}
+    </select>
+
+    <insert id="insertWmsMaterialInventory" parameterType="WmsMaterialInventory" useGeneratedKeys="true" keyProperty="id">
+        insert into wms_material_inventory
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="warehouseId != null">warehouse_id,</if>
+            <if test="materialId != null">material_id,</if>
+            <if test="totalInventory != null">total_inventory,</if>
+            <if test="lockInventory != null">lock_inventory,</if>
+            <if test="inventoryLimit != null">inventory_limit,</if>
+            <if test="inventoryLower != null">inventory_lower,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="warehouseId != null">#{warehouseId},</if>
+            <if test="materialId != null">#{materialId},</if>
+            <if test="totalInventory != null">#{totalInventory},</if>
+            <if test="lockInventory != null">#{lockInventory},</if>
+            <if test="inventoryLimit != null">#{inventoryLimit},</if>
+            <if test="inventoryLower != null">#{inventoryLower},</if>
+         </trim>
+    </insert>
+
+    <update id="updateWmsMaterialInventory" parameterType="WmsMaterialInventory">
+        update wms_material_inventory
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="warehouseId != null">warehouse_id = #{warehouseId},</if>
+            <if test="materialId != null">material_id = #{materialId},</if>
+            <if test="totalInventory != null">total_inventory = #{totalInventory},</if>
+            <if test="lockInventory != null">lock_inventory = #{lockInventory},</if>
+            <if test="inventoryLimit != null">inventory_limit = #{inventoryLimit},</if>
+            <if test="inventoryLower != null">inventory_lower = #{inventoryLower},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteWmsMaterialInventoryById" parameterType="Long">
+        delete from wms_material_inventory where id = #{id}
+    </delete>
+
+    <delete id="deleteWmsMaterialInventoryByIds" parameterType="String">
+        delete from wms_material_inventory where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <delete id="deleteWmsInventoryDetailsByInventoryIds" parameterType="String">
+        delete from wms_material_inventory_details where material_inventory_id in
+        <foreach item="materialInventoryId" collection="array" open="(" separator="," close=")">
+            #{materialInventoryId}
+        </foreach>
+    </delete>
+
+    <delete id="deleteWmsInventoryDetailsByInventoryId" parameterType="Long">
+        delete from wms_material_inventory_details where material_inventory_id = #{materialInventoryId}
+    </delete>
+
+    <insert id="batchWmsInventoryDetails">
+        insert into wms_material_inventory_details( id, material_inventory_id, area_id, seat_id, existing_inventory, manufacture_date, manufacturer, batch_number, remark) values
+		<foreach item="item" index="index" collection="list" separator=",">
+            ( #{item.id}, #{item.materialInventoryId}, #{item.warehouseAreaId}, #{item.warehouseSeatId}, #{item.existingInventory}, #{item.manufactureDate}, #{item.manufacturer}, #{item.batchNumber}, #{item.remark})
+        </foreach>
+    </insert>
+
+    <resultMap type="WmsInventoryRelocationInformationVo" id="WmsMaterialInventoryWmsRelocationInfoVoResult">
+        <result property="id"    column="id"    />
+        <result property="totalInventory"    column="total_inventory"    />
+        <result property="material"    column="material"    />
+        <result property="materialId"    column="material_id"    />
+        <result property="lockInventory"    column="lock_inventory"    />
+        <result property="batchNumber"    column="batch_number"    />
+        <result property="sourceWarehouse"    column="source_warehouse"    />
+        <result property="sourceArea"    column="source_area"    />
+        <result property="sourceSeat"    column="source_seat"    />
+        <result property="existingInventory"    column="existing_inventory"    />
+        <result property="manufactureDate"    column="manufacture_date"    />
+        <result property="manufacturer"    column="manufacturer"    />
+        <result property="warehouseName"    column="warehouse_name"    />
+        <result property="areaName"    column="area_name"    />
+        <result property="seatName"    column="seat_name"    />
+    </resultMap>
+    <select id="selectRelocationInfoById" parameterType="Long" resultMap="WmsMaterialInventoryWmsRelocationInfoVoResult">
+        select c.id,a.total_inventory,a.material_id,a.warehouse_id as source_warehouse, b.material_name as material,c.area_id as source_area,c.seat_id as source_seat,
+               c.existing_inventory,c.manufacture_date,c.manufacturer,c.batch_number, c.lock_inventory, d.warehouse_name,e.area_name,f.seat_name
+        from wms_material_inventory a
+        LEFT JOIN wms_material b on b.id = a.material_id
+        LEFT JOIN wms_material_inventory_details c on c.material_inventory_id = a.id
+        LEFT JOIN wms_warehouse d on d.id = a.warehouse_id
+        LEFT JOIN wms_warehouse_area e on e.id = c.area_id
+        LEFT JOIN wms_warehouse_seat f on f.id = c.seat_id
+        where a.id = #{id}
+    </select>
+</mapper>

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhonghui.procurement.mapper.ProcurementListMapper">
+
+    <resultMap type="com.zhonghui.procurement.domain.ProcurementList" id="procurementListResultMap">
+        <result property="listId" column="list_id"/>
+        <result property="title" column="title"/>
+        <result property="releaseTime" column="release_time"/>
+        <result property="text" column="text"/>
+        <result property="attachment" column="attachment"/>
+        <result property="publisher" column="publisher"/>
+        <result property="listType" column="list_type"/>
+        <result property="announcementType" column="announcement_type"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        list_id,title,release_time,text,attachment,publisher,list_type,announcement_type
+    </sql>
+
+    <select id="getProcurementList" resultMap="procurementListResultMap">
+        select <include refid="Base_Column_List"></include> from procurement_list
+        where list_type = #{listType}
+        <if test="announcementType != null">
+            and announcement_type = #{announcementType}
+            order by release_time asc
+        </if>
+    </select>
+
+    <select id="getProcurementListItem" resultMap="procurementListResultMap">
+        select *
+        from procurement_list
+        where list_id = #{id};
+    </select>
+</mapper>

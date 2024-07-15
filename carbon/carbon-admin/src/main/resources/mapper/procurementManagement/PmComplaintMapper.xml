@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhonghui.procurementManagement.mapper.PmComplaintMapper">
+    
+    <resultMap type="PmComplaint" id="PmComplaintResult">
+        <result property="complaintId"    column="complaint_id"    />
+        <result property="title"    column="title"    />
+        <result property="creationTime"    column="creation_time"    />
+        <result property="complaintType"    column="complaint_type"    />
+        <result property="contactNumber"    column="contact_number"    />
+        <result property="contactPerson"    column="contact_person"    />
+        <result property="attachment"    column="attachment"    />
+        <result property="complaintText"    column="complaint_text"    />
+        <result property="processingResult"    column="processing_result"    />
+    </resultMap>
+
+    <sql id="selectPmComplaintVo">
+        select complaint_id, title, creation_time, complaint_type, contact_number, contact_person, attachment, complaint_text, processing_result from procurement_complaint
+    </sql>
+
+    <select id="selectPmComplaintList" parameterType="PmComplaint" resultMap="PmComplaintResult">
+        <include refid="selectPmComplaintVo"/>
+        <where>  
+            <if test="title != null  and title != ''"> and title = #{title}</if>
+            <if test="complaintType != null "> and complaint_type = #{complaintType}</if>
+        </where>
+    </select>
+    
+    <select id="selectPmComplaintByComplaintId" parameterType="Long" resultMap="PmComplaintResult">
+        <include refid="selectPmComplaintVo"/>
+        where complaint_id = #{complaintId}
+    </select>
+        
+    <insert id="insertPmComplaint" parameterType="PmComplaint" useGeneratedKeys="true" keyProperty="complaintId">
+        insert into procurement_complaint
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="title != null and title != ''">title,</if>
+            <if test="creationTime != null">creation_time,</if>
+            <if test="complaintType != null">complaint_type,</if>
+            <if test="contactNumber != null and contactNumber != ''">contact_number,</if>
+            <if test="contactPerson != null and contactPerson != ''">contact_person,</if>
+            <if test="attachment != null">attachment,</if>
+            <if test="complaintText != null and complaintText != ''">complaint_text,</if>
+            <if test="processingResult != null">processing_result,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="title != null and title != ''">#{title},</if>
+            <if test="creationTime != null">#{creationTime},</if>
+            <if test="complaintType != null">#{complaintType},</if>
+            <if test="contactNumber != null and contactNumber != ''">#{contactNumber},</if>
+            <if test="contactPerson != null and contactPerson != ''">#{contactPerson},</if>
+            <if test="attachment != null">#{attachment},</if>
+            <if test="complaintText != null and complaintText != ''">#{complaintText},</if>
+            <if test="processingResult != null">#{processingResult},</if>
+         </trim>
+    </insert>
+
+    <update id="updatePmComplaint" parameterType="PmComplaint">
+        update procurement_complaint
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="title != null and title != ''">title = #{title},</if>
+            <if test="creationTime != null">creation_time = #{creationTime},</if>
+            <if test="complaintType != null">complaint_type = #{complaintType},</if>
+            <if test="contactNumber != null and contactNumber != ''">contact_number = #{contactNumber},</if>
+            <if test="contactPerson != null and contactPerson != ''">contact_person = #{contactPerson},</if>
+            <if test="attachment != null">attachment = #{attachment},</if>
+            <if test="complaintText != null and complaintText != ''">complaint_text = #{complaintText},</if>
+            <if test="processingResult != null">processing_result = #{processingResult},</if>
+        </trim>
+        where complaint_id = #{complaintId}
+    </update>
+
+    <delete id="deletePmComplaintByComplaintId" parameterType="Long">
+        delete from procurement_complaint where complaint_id = #{complaintId}
+    </delete>
+
+    <delete id="deletePmComplaintByComplaintIds" parameterType="String">
+        delete from procurement_complaint where complaint_id in 
+        <foreach item="complaintId" collection="array" open="(" separator="," close=")">
+            #{complaintId}
+        </foreach>
+    </delete>
+</mapper>

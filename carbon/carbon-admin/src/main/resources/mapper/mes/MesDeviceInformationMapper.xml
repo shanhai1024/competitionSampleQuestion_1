@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhonghui.mes.mapper.MesDeviceInformationMapper">
+    
+    <resultMap type="MesDeviceInformation" id="MesDeviceInformationResult">
+        <result property="id"    column="id"    />
+        <result property="deviceName"    column="device_name"    />
+        <result property="deviceCode"    column="device_code"    />
+        <result property="deviceModel"    column="device_model"    />
+        <result property="produceDate"    column="produce_date"    />
+        <result property="produceCode"    column="produce_code"    />
+        <result property="manufacturer"    column="manufacturer"    />
+        <result property="deviceStatus"    column="device_status"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectMesDeviceInformationVo">
+        select id, device_name, device_code, device_model, produce_date, produce_code, manufacturer, device_status, remark from mes_device_information
+    </sql>
+
+    <select id="selectMesDeviceInformationList" parameterType="MesDeviceInformation" resultMap="MesDeviceInformationResult">
+        <include refid="selectMesDeviceInformationVo"/>
+        <where>  
+            <if test="deviceName != null  and deviceName != ''"> and device_name like concat('%', #{deviceName}, '%')</if>
+            <if test="deviceCode != null  and deviceCode != ''"> and device_code like concat('%', #{deviceCode}, '%')</if>
+            <if test="deviceModel != null  and deviceModel != ''"> and device_model like concat('%', #{deviceModel}, '%')</if>
+            <if test="params.beginProduceDate != null and params.beginProduceDate != '' and params.endProduceDate != null and params.endProduceDate != ''"> and produce_date between #{params.beginProduceDate} and #{params.endProduceDate}</if>
+            <if test="produceCode != null  and produceCode != ''"> and produce_code like concat('%', #{produceCode}, '%')</if>
+            <if test="manufacturer != null  and manufacturer != ''"> and manufacturer like concat('%', #{manufacturer}, '%')</if>
+            <if test="deviceStatus != null "> and device_status like concat('%', #{deviceStatus}, '%')</if>
+        </where>
+    </select>
+    
+    <select id="selectMesDeviceInformationById" parameterType="Integer" resultMap="MesDeviceInformationResult">
+        <include refid="selectMesDeviceInformationVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertMesDeviceInformation" parameterType="MesDeviceInformation" useGeneratedKeys="true" keyProperty="id">
+        insert into mes_device_information
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="deviceName != null and deviceName != ''">device_name,</if>
+            <if test="deviceCode != null">device_code,</if>
+            <if test="deviceModel != null">device_model,</if>
+            <if test="produceDate != null">produce_date,</if>
+            <if test="produceCode != null">produce_code,</if>
+            <if test="manufacturer != null">manufacturer,</if>
+            <if test="deviceStatus != null">device_status,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="deviceName != null and deviceName != ''">#{deviceName},</if>
+            <if test="deviceCode != null">#{deviceCode},</if>
+            <if test="deviceModel != null">#{deviceModel},</if>
+            <if test="produceDate != null">#{produceDate},</if>
+            <if test="produceCode != null">#{produceCode},</if>
+            <if test="manufacturer != null">#{manufacturer},</if>
+            <if test="deviceStatus != null">#{deviceStatus},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateMesDeviceInformation" parameterType="MesDeviceInformation">
+        update mes_device_information
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="deviceName != null and deviceName != ''">device_name = #{deviceName},</if>
+            <if test="deviceCode != null">device_code = #{deviceCode},</if>
+            <if test="deviceModel != null">device_model = #{deviceModel},</if>
+            <if test="produceDate != null">produce_date = #{produceDate},</if>
+            <if test="produceCode != null">produce_code = #{produceCode},</if>
+            <if test="manufacturer != null">manufacturer = #{manufacturer},</if>
+            <if test="deviceStatus != null">device_status = #{deviceStatus},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteMesDeviceInformationById" parameterType="Integer">
+        delete from mes_device_information where id = #{id}
+    </delete>
+
+    <delete id="deleteMesDeviceInformationByIds" parameterType="String">
+        delete from mes_device_information where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

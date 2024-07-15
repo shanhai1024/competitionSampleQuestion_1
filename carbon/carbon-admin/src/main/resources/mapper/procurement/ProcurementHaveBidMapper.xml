@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhonghui.procurement.mapper.ProcurementHaveBidMapper">
+
+    <resultMap id="BaseResultMap" type="com.zhonghui.procurement.domain.ProcurementHaveBid">
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="bidId" column="bid_id" jdbcType="INTEGER"/>
+            <result property="snapshotInformation" column="snapshot_information" jdbcType="INTEGER"/>
+        <result property="userId" column="user_id" jdbcType="INTEGER"/>
+        <result property="information" column="Information"/>
+    </resultMap>
+
+    <resultMap id="ProcurementHaveBidVoMap" type="com.zhonghui.procurement.domain.vo.ProcurementHaveBidVo">
+        <id property="id" column="id" jdbcType="INTEGER"/>
+        <result property="bidId" column="bid_id" jdbcType="INTEGER"/>
+        <result property="snapshotInformation" column="snapshot_information" jdbcType="INTEGER"/>
+        <result property="userId" column="user_id" jdbcType="INTEGER"/>
+        <result property="information" column="information"/>
+        <collection property="procurementMark" column="bid_id"
+                    ofType="com.zhonghui.procurement.domain.ProcurementMark"
+                    select="com.zhonghui.procurement.mapper.ProcurementMarkMapper.selectMarkListById"/>
+        <collection property="procurementSnapshotInformation" column="snapshot_information"
+                    ofType="com.zhonghui.procurement.domain.ProcurementSnapshotInformation"
+                    select="com.zhonghui.procurement.mapper.ProcurementSnapshotInformationMapper.selectById"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,bid_id,snapshot_information,
+        user_id,information
+    </sql>
+
+    <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.zhonghui.procurement.domain.ProcurementHaveBid" useGeneratedKeys="true">
+        insert into procurement_have_bid
+        ( id,bid_id,snapshot_information,user_id,information)
+        values (#{id,jdbcType=INTEGER},#{bidId,jdbcType=INTEGER},#{snapshotInformation,jdbcType=INTEGER},#{userId,jdbcType=INTEGER},#{information,jdbcType=INTEGER})
+    </insert>
+
+    <select id="getHaveBidList" resultMap="ProcurementHaveBidVoMap">
+        select
+        <include refid="Base_Column_List" />
+        from procurement_have_bid
+        where user_id = #{userId}
+    </select>
+
+    <update id="setHaveBidList">
+        update procurement_have_bid set information=#{fileList} where id=#{id}
+    </update>
+
+    <select id="getHaveBidById" resultMap="ProcurementHaveBidVoMap">
+        select
+        <include refid="Base_Column_List" />
+        from procurement_have_bid
+        where id = #{id}
+    </select>
+</mapper>
